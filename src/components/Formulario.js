@@ -93,6 +93,29 @@ const Formulario = props => {
       });
   };
 
+  const update = async newPatient => {
+    const response_ = await axios
+      .put(`${endpoint}appointment/${newPatient.id}`, {
+        name: newPatient.paciente,
+        owner: newPatient.owner,
+        email: newPatient.email,
+        phone: newPatient.phone,
+        symptom: newPatient.symptom,
+        // date: newPatient.date
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        Alert.alert('Error', 'Server error.', [
+          {text: 'Recordar después', style: 'cancel'},
+          {text: 'Cancelar'},
+          {text: 'Ok'},
+        ]);
+      });
+  };
+
+
   const handleCita = () => {
     if ([paciente, owner, email, date, symptom].includes('')) {
       //alerta para validar que todos los campos esten llenos.
@@ -117,6 +140,7 @@ const Formulario = props => {
       const pacientesActualizados = pacientes.map(pacienteState =>
         pacienteState.id === newPatient.id ? newPatient : pacienteState,
       );
+      update(newPatient);
       setPacientes(pacientesActualizados);
       setPacienteApp({});
     } else {
@@ -132,7 +156,7 @@ const Formulario = props => {
     setDate(new Date());
     setSymptom('');
     pacienteAgregado();
-    
+
 
   };
 
@@ -172,7 +196,7 @@ const Formulario = props => {
             />
           </View>
 
-        
+
           <View style={styles.campo}>
           <Text style={styles.label}>Propietario</Text>
 
@@ -183,7 +207,7 @@ const Formulario = props => {
               onValueChange={(itemValue, itemIndex) => {
                 setOwner(itemValue);
               }}>
-              {users?.map(user => (  
+              {users?.map(user => (
                 <Picker.Item key={user.id} label={user.name} value={user.id} />
               ))}
 
